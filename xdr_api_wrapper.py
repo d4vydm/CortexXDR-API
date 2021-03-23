@@ -124,20 +124,40 @@ class XDRClient:
     def get_incidents_http_request(self, data):
         """
         # Get a list of incidents paramsed by a list of incident IDs, modification time, or creation time.
+        # data is a json formatted body containting the request_data
+        # https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-api/cortex-xdr-apis/incident-management/get-incidents.html
         """
 
         function = "incidents/get_incidents/"
         return self.post_general_http_request(function, data)
 
+    def get_incident_extra_data_http_request(self, data):
+        """
+        # Get extra data fields of a specific incident including alerts and key artifacts.
+        # The API includes a limit rate of 10 API requests per minute.
+        # https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-api/cortex-xdr-apis/incident-management/get-extra-incident-data.html
+        """
+
+        function = "incidents/get_incident_extra_data/"
+        return self.post_general_http_request(function, data)
+
     def get_endpoint_http_request(self, data):
         """
         # Gets a list of filtered endpoints
+        # https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-api/cortex-xdr-apis/endpoint-management/get-endpoints.html
         """
 
         function = "endpoints/get_endpoint/"
         return self.post_general_http_request(function, data)
 
+    def get_alerts_http_request(self, data):
+        """
+        # Get a list of alerts with multiple events.
+        # https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-api/cortex-xdr-apis/incident-management/get-alerts.html
+        """
 
+        function = "alerts/get_alerts_multi_events/"
+        return self.post_general_http_request(function, data)
 
 
 
@@ -153,6 +173,17 @@ def get_incidents(xdrclient, data):
 
     return output
 
+def get_incident_extra_data(xdrclient, data):
+    """
+    # Get extra data fields of a specific incident including alerts and key artifacts.
+    """
+
+    resp = xdrclient.get_incident_extra_data(data)
+
+    name = 'Cortex XDR Get Incident Extra Data'
+    output = json.dumps({"APICall": name, "Response": resp.json()}, indent=4)
+
+    return output
 
 def get_endpoint(xdrclient, data):
     """
@@ -166,3 +197,14 @@ def get_endpoint(xdrclient, data):
 
     return output
 
+def get_alerts(xdrclient, data):
+    """
+    # Get a list of alerts with multiple events.
+    """
+
+    resp = xdrclient.get_alerts_http_request(data)
+
+    name = 'Cortex XDR Get Alerts'
+    output = json.dumps({"APICall": name, "Response": resp.json()}, indent=4)
+
+    return output

@@ -1,5 +1,6 @@
 import sys
 import os
+import time
 
 from xdr_api_wrapper import *
 
@@ -38,6 +39,11 @@ def executeCall(xdrclient, command, params, data):
             # Get the Agents, and their data
             resp = get_incidents(xdrclient, data)
             return resp
+        
+        elif command == 'xdr_get_alerts':
+            # Get the Agents, and their data
+            resp = get_alerts(xdrclient, data)
+            return resp
 
         else:
             errmsg = f'Command {command} not found'
@@ -59,45 +65,59 @@ def XDRplaybook(config_file):
     # Create Cortex XDR api client
     client = XDRClient(config_file)
 
-    #Get Agents
-    print('\n\n### Get Incidents')
-    command = 'xdr_get_incidents'
-    data = '{"request_data":{}}'
+    # #Get Incident
+    # print('\n\n### Get Incidents')
+    # command = 'xdr_get_incidents'
+    # data = '{"request_data":{}}'
+    # resp = executeCall(client, command, None, data)
+    # if resp != 0:
+    #     print("\nResult:\n" + resp)
+    #     printSep()
+
+
+    # #Get Incident Extra Data (incident_id: 3)
+    # print('\n\n### Get Incidents')
+    # command = 'xdr_get_incidents'
+    # data = '{\
+    #     "request_data": {\
+    #         "incident_id": "3",\
+    #         "alerts_limit": 20\
+    #     }\
+    # }'
+    # resp = executeCall(client, command, None, data)
+    # if resp != 0:
+    #     print("\nResult:\n" + resp)
+    #     printSep()
+
+
+    #Get Alerts
+    print('\n\n### Get Alerts')
+    command = 'xdr_get_alerts'
+    data = """
+        {{
+            "request_data": {{
+                "filters": [
+                    {{
+                        "field": "creation_time",
+                        "operator": "gte",
+                        "value": {currenttime}
+                    }}
+                ],
+                "search_from": 0,
+                "search_to": 100,
+                "sort": {{
+                    "field": "creation_time",
+                    "keyword": "desc"
+                }}
+            }}
+        }}
+        """.format(currenttime='1616501863003')
+
     resp = executeCall(client, command, None, data)
     if resp != 0:
         print("\nResult:\n" + resp)
         printSep()
 
-    # #Get Agents Filter by groupid
-    # print('\n\n### Get Agents filter by groupid')
-    # command = 'xdr_get_agents_filter'
-    # with open("./examples/in_get-agents.json", "r") as read_file:
-    #     filter = json.dumps(json.load(read_file), indent=4)
-    # resp = executeCall(client, command, filter, None)
-    # if resp != 0:
-    #     print("\nResult:\n" + resp)
-    #     printSep()
-
-    # #Disconnect a given client
-    # print('\n\n### Disconnect a given client')
-    # command = 'xdr_disconnect_from_network'
-    # with open("./examples/in_disconnect.json", "r") as read_file:
-    #     data = json.dumps(json.load(read_file), indent=4)
-
-    # resp = executeCall(client, command, None, data)
-    # if resp != 0:
-    #     print("\nResult:\n" + resp)
-    #     printSep()
-
-    # #Get Threats filtered by groupid
-    # print('\n\n### Update Threats')
-    # command = 'xdr_update_threat'
-    # with open("./examples/in_update-threats.json", "r") as read_file:
-    #     data = json.dumps(json.load(read_file), indent=4)
-    # resp = executeCall(client, command, None, data)
-    # if resp != 0:
-    #     print("\nResult:\n" + resp)
-    #     printSep()
 
 
 
