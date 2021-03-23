@@ -159,6 +159,14 @@ class XDRClient:
         function = "alerts/get_alerts_multi_events/"
         return self.post_general_http_request(function, data)
 
+    def isolate_endpoint_http_request(self, data):
+        """
+        # Isolate one or more endpoints in a single request. Request is limited to 1000 endpoints.
+        # https://docs.paloaltonetworks.com/cortex/cortex-xdr/cortex-xdr-api/cortex-xdr-apis/response-actions/isolate-endpoints.html
+        """
+
+        function = "endpoints/isolate/"
+        return self.post_general_http_request(function, data)
 
 
 def get_incidents(xdrclient, data):
@@ -205,6 +213,18 @@ def get_alerts(xdrclient, data):
     resp = xdrclient.get_alerts_http_request(data)
 
     name = 'Cortex XDR Get Alerts'
+    output = json.dumps({"APICall": name, "Response": resp.json()}, indent=4)
+
+    return output
+
+def isolate_endpoint(xdrclient, data):
+    """
+    # Isolate one or more endpoints in a single request.
+    """
+
+    resp = xdrclient.isolate_endpoint_http_request(data)
+
+    name = 'Cortex XDR Isolate Endpoints'
     output = json.dumps({"APICall": name, "Response": resp.json()}, indent=4)
 
     return output

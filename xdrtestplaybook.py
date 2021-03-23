@@ -89,34 +89,58 @@ def XDRplaybook(config_file):
     #     print("\nResult:\n" + resp)
     #     printSep()
 
-
-    #Get Alerts
-    print('\n\n### Get Alerts')
-    command = 'xdr_get_alerts'
+    #Get Endpoints
+    print('\n\n### Get Endpoints')
+    command = 'xdr_get_endpoint'
+    endpointgroup = "Cortex-Silverfort"
+    
     data = """
-        {{
-            "request_data": {{
-                "filters": [
-                    {{
-                        "field": "creation_time",
-                        "operator": "gte",
-                        "value": {currenttime}
-                    }}
-                ],
-                "search_from": 0,
-                "search_to": 100,
-                "sort": {{
-                    "field": "creation_time",
-                    "keyword": "desc"
+    {{
+        "request_data": {{
+            "filters": [
+                {{
+                    "field": "group_name",
+                    "operator": "in",
+                    "value": [
+                        "{endpointgroupname}"
+                    ]
                 }}
-            }}
+            ]
         }}
-        """.format(currenttime='1616501863003')
-
+    }}""".format(endpointgroupname=endpointgroup)
     resp = executeCall(client, command, None, data)
     if resp != 0:
         print("\nResult:\n" + resp)
         printSep()
+
+
+    # #Get Alerts
+    # print('\n\n### Get Alerts')
+    # command = 'xdr_get_alerts'
+    # data = """
+    #     {{
+    #         "request_data": {{
+    #             "filters": [
+    #                 {{
+    #                     "field": "creation_time",
+    #                     "operator": "gte",
+    #                     "value": {currenttime}
+    #                 }}
+    #             ],
+    #             "search_from": 0,
+    #             "search_to": 100,
+    #             "sort": {{
+    #                 "field": "creation_time",
+    #                 "keyword": "desc"
+    #             }}
+    #         }}
+    #     }}
+    #     """.format(currenttime='1616501863003')
+
+    # resp = executeCall(client, command, None, data)
+    # if resp != 0:
+    #     print("\nResult:\n" + resp)
+    #     printSep()
 
 
 
